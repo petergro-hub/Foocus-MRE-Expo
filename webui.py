@@ -299,7 +299,7 @@ settings = default_settings
 app = FastAPI()
 reload_javascript()
 
-shared.gradio_root = gr.Blocks(title=fooocus_version.full_version, css=modules.html.css).queue()
+shared.gradio_root = gr.Blocks(title="EPFL Cut/Paste", css=modules.html.css).queue()
 with shared.gradio_root:
     with gr.Row():
         with gr.Column(scale=2):

@@ -19,6 +19,8 @@ css = '''
   100% { transform: rotate(360deg); }
 }
 
+footer {visibility: hidden}
+
 /* Style the progress bar */
 progress {
   appearance: none; /* Remove default styling */
