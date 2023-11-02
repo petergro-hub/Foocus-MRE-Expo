@@ -603,7 +603,13 @@ with shared.gradio_root:
                 return gr.update()
 
         def verify_input(img2img, canny, depth, gallery_in, gallery_rev, gallery_out):
-            if (img2img or canny or depth) and len(gallery_in) == 0:
+            if gallery_in is None or (img2img or canny or depth) and len(gallery_in) == 0:
+                if gallery_in is None:
+                    generate_button = gr.update(visible=True)
+                    stop_button = gr.update(visible=False, interactive=False)
+                    raise gr.Error("You did not take a picture / Vous n'avez pas pris d'image")
+                    #gr.Warning("You did not take a picture / Vous n'avez pas pris d'image")
+                    return gr.update(value=False), gr.update(value=False), gr.update(value=False), gr.update()
                 if len(gallery_rev) > 0:
                     gr.Info('Image-2-Image / CL: imported revision as input')
                     return gr.update(), gr.update(), gr.update(), list(map(lambda x: x['name'], gallery_rev[:1]))
@@ -615,6 +621,12 @@ with shared.gradio_root:
                     return gr.update(value=False), gr.update(value=False), gr.update(value=False), gr.update()
             else:
                 return gr.update(), gr.update(), gr.update(), gr.update()
+                
+        def check_webcam(gallery_in):
+            if gallery_in is None:
+                raise gr.Error("You did not take a picture / Vous n'avez pas pris d'image")
+            else:
+                return
 
         ctrls = [
             prompt, negative_prompt, style_selections,
@@ -631,12 +643,13 @@ with shared.gradio_root:
         ctrls += [uov_method, uov_input_image]
         ctrls += [outpaint_selections, inpaint_input_image]
         ctrls += [style_iterator]
-        generate_button.click(lambda: (gr.update(visible=True, interactive=True), gr.update(visible=False), []), outputs=[stop_button, generate_button, output_gallery]) \
+        generate_button.click(fn=check_webcam, inputs=[input_gallery], outputs=[]) \
+            .success(lambda: (gr.update(visible=True, interactive=True), gr.update(visible=False), []), outputs=[stop_button, generate_button, output_gallery]) \
             .then(fn=refresh_seed, inputs=[seed_random, image_seed], outputs=image_seed) \
             .then(fn=verify_enhance_image, inputs=[input_image_checkbox, img2img_mode], outputs=[img2img_mode]) \
             .then(fn=verify_input, inputs=[img2img_mode, control_lora_canny, control_lora_depth, input_gallery, revision_gallery, output_gallery],
                 outputs=[img2img_mode, control_lora_canny, control_lora_depth, input_gallery]) \
-            .then(fn=verify_revision, inputs=[revision_mode, input_gallery, revision_gallery, output_gallery], outputs=[revision_mode, revision_gallery]) \
+            .success(fn=verify_revision, inputs=[revision_mode, input_gallery, revision_gallery, output_gallery], outputs=[revision_mode, revision_gallery]) \
             .then(fn=generate_clicked, inputs=ctrls + [input_gallery, revision_gallery, keep_input_names],
                 outputs=[progress_html, progress_window, gallery_holder, output_gallery, metadata_viewer, gallery_tabs]) \
             .then(lambda: (gr.update(visible=True), gr.update(visible=False)), outputs=[generate_button, stop_button]) \

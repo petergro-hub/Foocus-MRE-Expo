@@ -139,7 +139,7 @@ def generate_temp_filename(folder='./outputs/', extension='png', base=None):
         filename = f"{time_string}_{random_number}.{extension}"
     else:
         filename = f"{os.path.splitext(base)[0]}.{extension}"
-    result = os.path.join(folder, date_string, filename)
+    result = os.path.join(folder, filename)#result = os.path.join(folder, date_string, filename)
     return date_string, os.path.abspath(os.path.realpath(result)), filename
 
 

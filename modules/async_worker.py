@@ -87,6 +87,10 @@ def worker():
         input_image_checkbox, current_tab, \
         uov_method, uov_input_image, outpaint_selections, inpaint_input_image, \
         use_style_iterator, input_gallery, revision_gallery, keep_input_names = task
+        
+        if input_gallery is None:
+            pipeline.clear_all_caches()
+            return
 
         outpaint_selections = [o.lower() for o in outpaint_selections]
 
@@ -272,6 +276,7 @@ def worker():
                     height, width = inpaint_worker.current_task.image_raw.shape[:2]
                     print(f'Final resolution is {str((height, width))}, latent is {str((H * 8, W * 8))}.')
 
+	
 
         input_gallery_size = len(input_gallery)
         if input_gallery_size == 0:
