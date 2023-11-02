@@ -58,6 +58,12 @@ def worker():
             image = core.upscale(image, megapixels)
         return image
 
+    def trafo_image(image_np, megapixels=1.0):
+        #print(image_np)
+        image = image_np.astype(np.float32) / 255.0
+        image = torch.from_numpy(image)[None,]
+        image = core.upscale(image, megapixels)
+        return image
 
     def progressbar(number, text):
         print(f'[Fooocus] {text}')
@@ -455,8 +461,8 @@ def worker():
         outputs.append(['preview', (13, 'Starting tasks ...', None)])
         for current_task_idx, task in enumerate(tasks):
             if img2img_mode or control_lora_canny or control_lora_depth:
-                input_gallery_entry = input_gallery[current_task_idx % input_gallery_size]
-                input_image_path = input_gallery_entry['name']
+                input_gallery_entry = input_gallery #[current_task_idx % input_gallery_size]
+                input_image_path = None #input_gallery_entry['name']
                 input_image_filename = None if input_image_path == None else os.path.basename(input_image_path)
             else:
                 input_image_path = None
@@ -471,7 +477,7 @@ def worker():
                 denoise = denoising_strength
 
             input_image = None
-            if input_image_path != None:
+            if input_gallery_entry is not None:
                 img2img_megapixels = width * height * img2img_scale ** 2 / 2**20
                 min_mp = constants.MIN_MEGAPIXELS if is_sdxl else constants.MIN_MEGAPIXELS_SD
                 max_mp = constants.MAX_MEGAPIXELS if is_sdxl else constants.MAX_MEGAPIXELS_SD
@@ -479,7 +485,7 @@ def worker():
                     img2img_megapixels = min_mp
                 elif img2img_megapixels > max_mp:
                     img2img_megapixels = max_mp
-                input_image = get_image(input_image_path, img2img_megapixels)
+                input_image = trafo_image(input_gallery_entry, img2img_megapixels)
 
             try:
                 execution_start_time = time.perf_counter()

@@ -15,7 +15,7 @@ def load_settings():
     settings['seed_random'] = True
     settings['same_seed_for_all'] = False
     settings['seed'] = 0
-    settings['styles'] = ['Default (Slightly Cinematic)']
+    settings['styles'] = ['SAI Comic Book']#['Default (Slightly Cinematic)']
     settings['prompt_expansion'] = True
     settings['prompt'] = ''
     settings['negative_prompt'] = ''
@@ -26,14 +26,14 @@ def load_settings():
     settings['img2img_start_step'] = 0.06
     settings['img2img_denoise'] = 0.94
     settings['img2img_scale'] = 1.0
-    settings['control_lora_canny'] = False
+    settings['control_lora_canny'] = True
     settings['canny_edge_low'] = 0.2
     settings['canny_edge_high'] = 0.8
     settings['canny_start'] = 0.0
     settings['canny_stop'] = 0.4
     settings['canny_strength'] = 0.8
     settings['canny_model'] = modules.path.default_controlnet_canny_name
-    settings['control_lora_depth'] = False
+    settings['control_lora_depth'] = True
     settings['depth_start'] = 0.0
     settings['depth_stop'] = 0.4
     settings['depth_strength'] = 0.8

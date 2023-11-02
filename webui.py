@@ -308,7 +308,7 @@ with shared.gradio_root:
             with gr.Column() as gallery_holder:
                 with gr.Tabs(selected=GALLERY_ID_OUTPUT) as gallery_tabs:
                     with gr.Tab(label='Input', id=GALLERY_ID_INPUT):
-                        input_gallery = gr.Gallery(label='Input', show_label=False, object_fit='contain', height=720, visible=True)
+                        input_gallery = gr.Image(label='Input', show_label=False, height=720, source='webcam', type='numpy', visible=True)
                     with gr.Tab(label='Revision', id=GALLERY_ID_REVISION):
                         revision_gallery = gr.Gallery(label='Revision', show_label=False, object_fit='contain', height=720, visible=True)
                     with gr.Tab(label='Output', id=GALLERY_ID_OUTPUT):
@@ -318,7 +318,7 @@ with shared.gradio_root:
                     prompt = gr.Textbox(show_label=False, placeholder='What do you want to see.', container=False, autofocus=True, elem_classes='type_row', lines=1024, value=settings['prompt'])
                 with gr.Column(scale=3, min_width=0):
                     with gr.Row():
-                        img2img_mode = gr.Checkbox(label='Image-2-Image', value=settings['img2img_mode'], elem_classes='type_small_row')
+                        img2img_mode = gr.Checkbox(label='Image-2-Image', value=settings['img2img_mode'], elem_classes='type_small_row', visible=False)
                     with gr.Row():
                         generate_button = gr.Button(label='Generate', value='Generate', elem_classes='type_small_row', elem_id='generate_button', visible=True)
                         stop_button = gr.Button(label='Stop', value='Stop', elem_classes='type_small_row', elem_id='stop_button', visible=False)
@@ -330,7 +330,7 @@ with shared.gradio_root:
                         stop_button.click(fn=stop_clicked, outputs=stop_button, queue=False)
 
             with gr.Row(elem_classes='advanced_check_row'):
-                input_image_checkbox = gr.Checkbox(label='Enhance Image', value=False, container=False, elem_classes='min_check')
+                input_image_checkbox = gr.Checkbox(label='Enhance Image', value=False, container=False, elem_classes='min_check', visible = False)
                 advanced_checkbox = gr.Checkbox(label='Advanced', value=settings['advanced_mode'], container=False, elem_classes='min_check')
 
             with gr.Row(visible=False) as image_input_panel:
@@ -650,4 +650,4 @@ with shared.gradio_root:
 
 app = gr.mount_gradio_app(app, shared.gradio_root, '/')
 shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share,
-    auth=check_auth if args.share and auth_enabled else None, allowed_paths=[modules.path.temp_outputs_path])
+    auth=check_auth if args.share and auth_enabled else None, allowed_paths=[modules.path.temp_outputs_path], ssl_certfile="cert.pem", ssl_keyfile="key.pem", ssl_verify=False)

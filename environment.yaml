@@ -1,4 +1,4 @@
-name: fooocus
+name: fooocus-MRE
 channels:
   - pytorch
   - nvidia
