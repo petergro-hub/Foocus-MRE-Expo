@@ -309,13 +309,14 @@ with shared.gradio_root:
                 with gr.Tabs(selected=GALLERY_ID_OUTPUT) as gallery_tabs:
                     with gr.Tab(label='Input', id=GALLERY_ID_INPUT):
                         input_gallery = gr.Image(label='Input', show_label=False, height=720, source='webcam', type='numpy', visible=True)
-                    with gr.Tab(label='Revision', id=GALLERY_ID_REVISION):
-                        revision_gallery = gr.Gallery(label='Revision', show_label=False, object_fit='contain', height=720, visible=True)
+                        revision_gallery = gr.Gallery(label='Revision', show_label=False, object_fit='contain', height=720, visible=False)
+                    #with gr.Tab(label='Revision', id=GALLERY_ID_REVISION):
+                    #    revision_gallery = gr.Gallery(label='Revision', show_label=False, object_fit='contain', height=720, visible=True)
                     with gr.Tab(label='Output', id=GALLERY_ID_OUTPUT):
                         output_gallery = gr.Gallery(label='Output', show_label=False, object_fit='contain', height=720, visible=True)
             with gr.Row(elem_classes='type_row'):
                 with gr.Column(scale=17):
-                    prompt = gr.Textbox(show_label=False, placeholder='What do you want to see.', container=False, autofocus=True, elem_classes='type_row', lines=1024, value=settings['prompt'])
+                    prompt = gr.Textbox(show_label=False, placeholder='Optional: Enter a guidance prompt here / Entrez des directives de style', container=False, autofocus=True, elem_classes='type_row', lines=1024, value=settings['prompt'])
                 with gr.Column(scale=3, min_width=0):
                     with gr.Row():
                         img2img_mode = gr.Checkbox(label='Image-2-Image', value=settings['img2img_mode'], elem_classes='type_small_row', visible=False)
@@ -331,7 +332,8 @@ with shared.gradio_root:
 
             with gr.Row(elem_classes='advanced_check_row'):
                 input_image_checkbox = gr.Checkbox(label='Enhance Image', value=False, container=False, elem_classes='min_check', visible = False)
-                advanced_checkbox = gr.Checkbox(label='Advanced', value=settings['advanced_mode'], container=False, elem_classes='min_check')
+                #advanced_checkbox = gr.Checkbox(label='Advanced', value=settings['advanced_mode'], container=False, elem_classes='min_check')
+                adv = gr.Textbox(label='Advanced - Staff', placeholder="Settings")
 
             with gr.Row(visible=False) as image_input_panel:
                 with gr.Tabs():
@@ -593,7 +595,13 @@ with shared.gradio_root:
                     save_metadata_image = gr.Checkbox(label='Save Metadata in Image', value=settings['save_metadata_image'])
                 metadata_viewer = gr.JSON(label='Metadata')
 
-        advanced_checkbox.change(lambda x: gr.update(visible=x), advanced_checkbox, advanced_column, queue=False)
+        #advanced_checkbox.change(lambda x: gr.update(visible=x), advanced_checkbox, advanced_column, queue=False)
+        def check_pw(pw):
+            if pw == "epflpavillon":
+                return gr.update(visible=True)
+            return gr.update(visible=False)
+                
+        adv.change(check_pw, adv, advanced_column, queue=False)
 
         def verify_enhance_image(enhance_image, img2img):
             if enhance_image and img2img:
